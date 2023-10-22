@@ -1,5 +1,5 @@
 export enum USER_TYPE {
-  DONOR = 'donor',
-  RESTURANT = 'resturant',
-  COMMON = 'less priviledged',
+  DONOR = 'DONOR',
+  RESTAURANT_OWNER = 'RESTAURANT_OWNER',
+  LESS_PRIVILEGED_USER = 'LESS_PRIVILEGED_USER',
 }

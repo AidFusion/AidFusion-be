@@ -26,6 +26,7 @@
     "@nestjs/swagger": "^7.1.13",
     "@prisma/client": "^5.4.2",
     "class-validator": "^0.14.0",
+    "mongodb": "^6.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.0"
