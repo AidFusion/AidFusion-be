@@ -80,7 +80,7 @@ export class AccountService {
     return { ...utils.mapToAccount(_account), token };
   }
 
-  async getUser(user: tokenPayload) {
+  async getUser(user: tokenPayload): Account {
     console.log(user);
   }
 }
