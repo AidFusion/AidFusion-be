@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import {
@@ -7,6 +7,7 @@ import {
   ResponseDto,
 } from 'src/common/Dto';
 import { Prisma } from '@prisma/client';
+import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 
 @ApiTags('account')
 @Controller('account')
@@ -24,5 +25,11 @@ export class AccountController {
       data: account,
       message: 'Successfully created new user',
     };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("/")
+  async getUser(@Request() req) {
+    
   }
 }

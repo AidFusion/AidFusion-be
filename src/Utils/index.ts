@@ -1,6 +1,9 @@
-import { Account } from '@prisma/client';
+import { Account, USER_TYPE } from '@prisma/client';
 import { AccountResponseDto } from 'src/common/Dto';
 import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+import { tokenPayload } from 'src/common/Dto/JwtDto';
+import { jwtSecret } from 'src/Config/env';
 
 export class utils {
   static async hashString(a: string): Promise<string> {
@@ -21,4 +24,8 @@ export class utils {
       verified: data.verified,
     };
   };
+
+  static generateToken(payload: tokenPayload): string {
+    return jwt.sign(payload, jwtSecret);
+  }
 }
