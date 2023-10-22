@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+} from 'class-validator';
 import { USER_TYPE } from '../enums';
 
 export class ResponseDto<T> {
@@ -33,7 +39,10 @@ export class AccountDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'type of user', default: USER_TYPE.LESS_PRIVILEGED_USER })
+  @ApiProperty({
+    description: 'type of user',
+    default: USER_TYPE.LESS_PRIVILEGED_USER,
+  })
   @IsNotEmpty()
   type: USER_TYPE;
 
@@ -41,6 +50,16 @@ export class AccountDto {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  @ApiProperty({ description: 'mobile number of the user' })
+  @IsNotEmpty()
+  @IsString()
+  mobile_no: string;
+
+  @ApiProperty({ description: 'verification state of the user' })
+  @IsNotEmpty()
+  @IsBoolean()
+  verified: boolean;
 }
 
 export class CreateAccountDto {
@@ -54,7 +73,10 @@ export class CreateAccountDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'type of user', default: USER_TYPE.LESS_PRIVILEGED_USER })
+  @ApiProperty({
+    description: 'type of user',
+    default: USER_TYPE.LESS_PRIVILEGED_USER,
+  })
   @IsNotEmpty()
   type: USER_TYPE;
 
@@ -62,6 +84,16 @@ export class CreateAccountDto {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  @ApiProperty({ description: 'state of the user' })
+  @IsNotEmpty()
+  @IsBoolean()
+  online: boolean;
+
+  @ApiProperty({ description: 'mobile number of the user' })
+  @IsNotEmpty()
+  @IsString()
+  mobile_no: string;
 }
 
 export class AccountResponseDto {
@@ -79,6 +111,21 @@ export class AccountResponseDto {
   @IsNotEmpty()
   @IsString()
   name: string;
+
+  @ApiProperty({ description: 'state of the user' })
+  @IsNotEmpty()
+  @IsBoolean()
+  online: boolean;
+
+  @ApiProperty({ description: 'verification state of the user' })
+  @IsNotEmpty()
+  @IsBoolean()
+  verified: boolean;
+
+  @ApiProperty({ description: 'mobile number of the user' })
+  @IsNotEmpty()
+  @IsString()
+  mobile_no: string;
 
   // @ApiProperty({ description: 'type of user' })
   // @IsNotEmpty()

@@ -17,12 +17,17 @@ enum USER_TYPE {
 }
 
 model Account {
-  id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  email    String
-  name     String
-  type     USER_TYPE
-  password String
-  Donation Donation[]
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  email     String     @unique
+  name      String
+  online    Boolean
+  createdAt DateTime   @default(now())
+  lastSeen  DateTime   @updatedAt()
+  type      USER_TYPE
+  password  String
+  verified  Boolean    @default(false)
+  mobile_no String
+  Donation  Donation[]
 }
 
 model Donation {
