@@ -7,7 +7,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import {
   AccountLoginResponseDto,
@@ -24,8 +24,21 @@ import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 export class AccountController {
   constructor(private accountService: AccountService) {}
 
-  @ApiOperation({ description: 'Create new account' })
   @Post('/register')
+  @ApiOperation({ summary: 'Register new Users' })
+  @ApiResponse({
+    status: 201,
+    description: 'Success',
+    type: ResponseDto<AccountResponseDto>,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
   async register(
     @Body() data: CreateAccountDto,
   ): Promise<ResponseDto<AccountResponseDto>> {
@@ -38,6 +51,20 @@ export class AccountController {
   }
 
   @Post('/login')
+  @ApiOperation({ summary: 'Login a user' })
+  @ApiResponse({
+    status: 201,
+    description: 'Success',
+    type: ResponseDto<AccountLoginResponseDto>,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
   async login(
     @Body() data: accountLoginDto,
   ): Promise<ResponseDto<AccountLoginResponseDto>> {
@@ -51,6 +78,20 @@ export class AccountController {
 
   @UseGuards(AuthGuard)
   @Get('/')
+  @ApiOperation({ summary: 'Get a user' })
+  @ApiResponse({
+    status: 201,
+    description: 'Success',
+    type: ResponseDto<any>,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
   async getUser(@Request() req): Promise<ResponseDto<any>> {
     const account = await this.accountService.getUser(req);
     return {
