@@ -128,6 +128,11 @@ export class AccountResponseDto {
   @IsString()
   mobile_no: string;
 
+  @ApiProperty({ description: 'Avatar of the user' })
+  @IsNotEmpty()
+  @IsString()
+  avatar: string;
+
   // @ApiProperty({ description: 'type of user' })
   // @IsNotEmpty()
   // type: USER_TYPE;

@@ -89,6 +89,10 @@ export class AccountController {
     description: 'Bad Request',
   })
   @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
     status: 500,
     description: 'Internal Server Error',
   })
@@ -97,6 +101,35 @@ export class AccountController {
     return {
       status: HttpStatus.OK,
       data: account,
+      message: 'Success',
+    };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/logout')
+  @ApiOperation({ summary: 'Get a user' })
+  @ApiResponse({
+    status: 201,
+    description: 'Success',
+    type: ResponseDto<any>,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  async logout(@Request() req): Promise<ResponseDto<string>> {
+    const message = await this.accountService.logout(req.user);
+    return {
+      status: HttpStatus.OK,
+      data: message,
       message: 'Success',
     };
   }

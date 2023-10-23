@@ -34,10 +34,9 @@ export class AccountService {
       data: {
         email: data.email,
         name: data.name,
-        online: true,
+        online: false,
         type: USER_TYPE[`${data.type}`],
         password: data.password,
-        verified: false,
         mobile_no: data.mobile_no,
       },
     });
@@ -77,11 +76,28 @@ export class AccountService {
       type: _account.type,
     };
     const token = utils.generateToken(payload);
+    await this.prisma.account.update({
+      where: { email: _account.email },
+      data: { online: true },
+    });
     return { ...utils.mapToAccount(_account), token };
   }
 
   async getUser(user: tokenPayload): Promise<AccountResponseDto> {
-    const _account: Account = await this.prisma.account.findUnique({ where: { email: user.email } });
-    return {...utils.mapToAccount(_account)}
+    const _account: Account = await this.prisma.account.findUnique({
+      where: { email: user.email },
+    });
+    return { ...utils.mapToAccount(_account) };
+  }
+
+  async logout(user: tokenPayload): Promise<string> {
+    const _account: Account = await this.prisma.account.findUnique({
+      where: { email: user.email },
+    });
+    await this.prisma.account.update({
+      where: { email: _account.email },
+      data: { online: false },
+    });
+    return 'User successfully logged out';
   }
 }
