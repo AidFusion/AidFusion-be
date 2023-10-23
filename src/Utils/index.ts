@@ -22,6 +22,7 @@ export class utils {
       online: data.online,
       mobile_no: data.mobile_no,
       verified: data.verified,
+      avatar: data.avatar,
     };
   };
 
