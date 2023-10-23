@@ -80,7 +80,8 @@ export class AccountService {
     return { ...utils.mapToAccount(_account), token };
   }
 
-  async getUser(user: tokenPayload): Account {
+  async getUser(user: tokenPayload): Promise<any> {
     console.log(user);
+    return `Hello`;
   }
 }
