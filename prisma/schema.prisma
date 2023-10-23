@@ -17,23 +17,32 @@ enum USER_TYPE {
 }
 
 model Account {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  email     String     @unique
-  name      String
-  online    Boolean
-  createdAt DateTime   @default(now())
-  lastSeen  DateTime   @updatedAt()
-  type      USER_TYPE
-  password  String
-  verified  Boolean    @default(false)
-  mobile_no String
-  Donation  Donation[]
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  email        String         @unique
+  name         String
+  online       Boolean
+  createdAt    DateTime       @default(now())
+  lastSeen     DateTime       @updatedAt()
+  type         USER_TYPE
+  password     String
+  verified     Boolean        @default(false)
+  mobile_no    String
+  Donation     Donation[]
+  Subscription Subscription[]
 }
 
 model Donation {
   id     String   @id @default(auto()) @map("_id") @db.ObjectId
   amount String
-  user   Account? @relation(fields: [userId], references: [id])
-  userId String?  @db.ObjectId
+  user   Account  @relation(fields: [userId], references: [id])
+  userId String   @db.ObjectId
   time   DateTime @default(now())
+}
+
+model Subscription {
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  user   Account  @relation(fields: [userId], references: [id])
+  email  String   @unique
+  userId String   @db.ObjectId
+  date   DateTime @default(now())
 }

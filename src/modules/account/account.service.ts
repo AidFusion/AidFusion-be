@@ -80,8 +80,16 @@ export class AccountService {
     return { ...utils.mapToAccount(_account), token };
   }
 
-  async getUser(user: tokenPayload): Promise<any> {
-    console.log(user);
-    return `Hello`;
+  async getUser(user: tokenPayload): Promise<AccountResponseDto> {
+    const _account: Account = await this.prisma.account.findUnique({ where: { email: user.email } });
+    return {...utils.mapToAccount(_account)}
   }
 }
+
+// {
+//   id: '65361078e0f600d29f351851',
+//   email: 'oladipupomichael9@gmail.com',
+//   verified: false,
+//   type: 'DONOR',
+//   iat: 1698042174
+// }

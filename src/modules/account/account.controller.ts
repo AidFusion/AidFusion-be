@@ -92,8 +92,8 @@ export class AccountController {
     status: 500,
     description: 'Internal Server Error',
   })
-  async getUser(@Request() req): Promise<ResponseDto<any>> {
-    const account = await this.accountService.getUser(req);
+  async getUser(@Request() req): Promise<ResponseDto<AccountResponseDto>> {
+    const account = await this.accountService.getUser(req.user);
     return {
       status: HttpStatus.OK,
       data: account,
