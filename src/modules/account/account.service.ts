@@ -85,11 +85,3 @@ export class AccountService {
     return {...utils.mapToAccount(_account)}
   }
 }
-
-// {
-//   id: '65361078e0f600d29f351851',
-//   email: 'oladipupomichael9@gmail.com',
-//   verified: false,
-//   type: 'DONOR',
-//   iat: 1698042174
-// }
