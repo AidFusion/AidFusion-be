@@ -1,2 +1,10 @@
 export const port = process.env.PORT;
 export const jwtSecret = process.env.JWT_SECRET;
+export const emailService = process.env.EMAIL_SERVICE;
+export const emailUser = process.env.EMAIL_USER;
+export const emailPassword = process.env.EMAIL_PASSWORD;
+export const jwtEmailSecret = process.env.JWT_EMAIL_SECRET;
+export const nodeEnv = process.env.NODE_ENV;
+export const donorLink = process.env.DONOR_LINK;
+export const lessPrivilegedUserLink = process.env.LESS_PRIVILEDGED_USER;
+export const restaurantOwnerLink = process.env.RESTAURANT_OWNER;

@@ -3,6 +3,7 @@ import { USER_TYPE } from '@prisma/client';
 import {
   IsBoolean,
   IsEmail,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsString,
@@ -188,6 +189,20 @@ export class AccountLoginResponseDto {
   mobile_no: string;
 
   @ApiProperty({ description: 'jwt token' })
+  @IsNotEmpty()
+  @IsString()
+  token: string;
+}
+
+export class VerifyEmailDto {
+  @ApiProperty({
+    description: 'user type',
+    enum: USER_TYPE,
+  })
+  @IsEnum(USER_TYPE)
+  userType: USER_TYPE;
+
+  @ApiProperty({ description: 'email verification token' })
   @IsNotEmpty()
   @IsString()
   token: string;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/Config/prisma.service';
 import { Account, Prisma, USER_TYPE } from '@prisma/client';
 import { BadRequestException } from '@nestjs/common';
@@ -7,13 +7,21 @@ import {
   AccountLoginResponseDto,
   AccountResponseDto,
   CreateAccountDto,
+  VerifyEmailDto,
   accountLoginDto,
 } from 'src/common/Dto';
-import { tokenPayload } from 'src/common/Dto/JwtDto';
+import { tokenPayload } from 'src/common/Dto/jwt.interface';
+import { AuthService } from '../auth/auth.service';
+import { EmailService } from '../notification/email/email.service';
+import { IVerificationToken, ValidateTokenResponse } from '../auth/interface';
 
 @Injectable()
 export class AccountService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private authService: AuthService,
+    private emailService: EmailService,
+  ) {}
 
   async register(data: CreateAccountDto): Promise<AccountResponseDto> {
     const { email, password, name, type }: CreateAccountDto = data;
@@ -90,6 +98,50 @@ export class AccountService {
     return { ...utils.mapToAccount(_account) };
   }
 
+  sendVerificationEmail(data: tokenPayload): Promise<{ sendStatus: boolean }> {
+    const { email, id, type } = data;
+    const token = this.authService.generateVerificationToken({ email });
+
+    const url: string = utils.getVerificationUrl(type, id, token);
+
+    return this.emailService.sendVerificationEmail(email, url);
+  }
+
+  async verifyEmail(
+    id: string,
+    { token, userType }: VerifyEmailDto,
+  ): Promise<AccountResponseDto> {
+    const res: ValidateTokenResponse<IVerificationToken> =
+      this.authService.validateVerificationToken(token);
+
+    if (!res.isValid) {
+      throw new BadRequestException(res.error);
+    }
+
+    const account = await this.prisma.account.findFirst({
+      where: {
+        id: id,
+        email: res.jwt.email,
+        type: userType,
+      },
+    });
+
+    if (!account) {
+      throw new BadRequestException(`User id ${id} not found!`); //come up with better error message
+    }
+
+    if (account.verified) {
+      throw new ConflictException('Email already verified');
+    }
+
+    account.verified = true;
+
+    const updated_account = await this.prisma.account.update({
+      where: { id, email: res.jwt.email, type: userType }, data: {verified: true}
+    });
+
+    return {...utils.mapToAccount(updated_account)}
+  }
   async logout(user: tokenPayload): Promise<string> {
     const _account: Account = await this.prisma.account.findUnique({
       where: { email: user.email },
