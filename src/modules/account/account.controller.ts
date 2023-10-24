@@ -3,17 +3,19 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import {
   AccountLoginResponseDto,
   AccountResponseDto,
   CreateAccountDto,
   ResponseDto,
+  VerifyEmailDto,
   accountLoginDto,
 } from 'src/common/Dto';
 import { Prisma } from '@prisma/client';
@@ -82,7 +84,7 @@ export class AccountController {
   @ApiResponse({
     status: 201,
     description: 'Success',
-    type: ResponseDto<any>,
+    type: ResponseDto<AccountResponseDto>,
   })
   @ApiResponse({
     status: 400,
@@ -105,13 +107,75 @@ export class AccountController {
     };
   }
 
+  @ApiCreatedResponse({
+    status: 201,
+    description: 'Success',
+    type: ResponseDto<boolean>,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  @UseGuards(AuthGuard)
+  @Post('/send-verify')
+  async sendVerificationEmail(@Request() req): Promise<ResponseDto<boolean>> {
+    const { sendStatus }: any = await this.accountService.sendVerificationEmail(
+      req.user,
+    );
+    return {
+      status: HttpStatus.OK,
+      data: sendStatus,
+      message: 'Success',
+    };
+  }
+
+  @ApiCreatedResponse({
+    status: 201,
+    description: 'Success',
+    type: ResponseDto<AccountResponseDto>,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
+  @ApiOperation({ description: 'email verification endpoint' })
+  @Post('/:id/verify')
+  async verifyEmail(
+    @Body() data: VerifyEmailDto,
+    @Param('id') id: string,
+  ): Promise<ResponseDto<AccountResponseDto>> {
+    const response = await this.accountService.verifyEmail(id, data);
+
+    return {
+      status: HttpStatus.OK,
+      data: response,
+      message: 'Email verified successfully!',
+    };
+  }
+
   @UseGuards(AuthGuard)
   @Get('/logout')
   @ApiOperation({ summary: 'Get a user' })
   @ApiResponse({
     status: 201,
     description: 'Success',
-    type: ResponseDto<any>,
+    type: ResponseDto<string>,
   })
   @ApiResponse({
     status: 400,
