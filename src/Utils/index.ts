@@ -2,8 +2,14 @@ import { Account, USER_TYPE } from '@prisma/client';
 import { AccountResponseDto } from 'src/common/Dto';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { tokenPayload } from 'src/common/Dto/JwtDto';
-import { jwtSecret } from 'src/Config/env';
+import { tokenPayload } from 'src/common/Dto/jwt.interface';
+import {
+  donorLink,
+  jwtSecret,
+  lessPrivilegedUserLink,
+  nodeEnv,
+  restaurantOwnerLink,
+} from 'src/Config/env';
 
 export class utils {
   static async hashString(a: string): Promise<string> {
@@ -28,5 +34,38 @@ export class utils {
 
   static generateToken(payload: tokenPayload): string {
     return jwt.sign(payload, jwtSecret);
+  }
+
+  static getVerificationUrl(
+    userType: USER_TYPE,
+    id: string,
+    token: string,
+  ): string {
+    let baseUrl = 'http://localhost:3000';
+
+    if (nodeEnv === 'staging' && userType === USER_TYPE.DONOR) {
+      baseUrl = donorLink;
+    } else if (
+      nodeEnv === 'staging' &&
+      userType === USER_TYPE.LESS_PRIVILEGED_USER
+    ) {
+      baseUrl = lessPrivilegedUserLink;
+    } else if (
+      nodeEnv === 'staging' &&
+      userType === USER_TYPE.RESTAURANT_OWNER
+    ) {
+      baseUrl = restaurantOwnerLink;
+    }
+
+    switch (userType) {
+      case USER_TYPE.DONOR:
+        return `${baseUrl}/merchant/verification/${id}/${token}`;
+      case USER_TYPE.LESS_PRIVILEGED_USER:
+        return `${baseUrl}/client/verification/${id}/${token}`;
+      case USER_TYPE.RESTAURANT_OWNER:
+        return `${baseUrl}/client/verification/${id}/${token}`;
+      default:
+        return '';
+    }
   }
 }
