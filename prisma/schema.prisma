@@ -28,19 +28,20 @@ enum CURRENCY {
 }
 
 model Account {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  email        String         @unique
-  name         String
-  online       Boolean
-  createdAt    DateTime       @default(now())
-  lastSeen     DateTime       @updatedAt()
-  type         USER_TYPE
-  password     String
-  verified     Boolean        @default(false)
-  mobile_no    String
-  avatar       String         @default("https://www.svgrepo.com/show/304564/user-avatar-face.svg")
-  Donation     Donation[]
-  Subscription Subscription[]
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  email           String            @unique
+  name            String
+  online          Boolean
+  createdAt       DateTime          @default(now())
+  lastSeen        DateTime          @updatedAt()
+  type            USER_TYPE
+  password        String
+  verified        Boolean           @default(false)
+  mobile_no       String
+  avatar          String            @default("https://www.svgrepo.com/show/304564/user-avatar-face.svg")
+  Donation        Donation[]
+  Subscription    Subscription[]
+  UserMealHistory UserMealHistory[]
 }
 
 model Donation {
@@ -62,4 +63,17 @@ model Subscription {
   email  String   @unique
   userId String   @db.ObjectId
   date   DateTime @default(now())
+}
+
+model Meals {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  img   String
+  name  String
+  price String
+}
+
+model UserMealHistory {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  user   Account @relation(fields: [userId], references: [id])
+  userId String  @db.ObjectId
 }
