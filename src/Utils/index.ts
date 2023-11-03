@@ -1,4 +1,4 @@
-import { Account, USER_TYPE } from '@prisma/client';
+import { Account, Meals, USER_TYPE } from '@prisma/client';
 import { AccountResponseDto } from 'src/common/Dto';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -10,6 +10,7 @@ import {
   nodeEnv,
   restaurantOwnerLink,
 } from 'src/Config/env';
+import { Meal } from 'src/modules/meal/meal.interface';
 
 export class utils {
   static async hashString(a: string): Promise<string> {
@@ -29,6 +30,15 @@ export class utils {
       mobile_no: data.mobile_no,
       verified: data.verified,
       avatar: data.avatar,
+    };
+  };
+
+  static mapToMeal = (data: Meals): Meals => {
+    return {
+      id: data.id,
+      img: data.img,
+      name: data.name,
+      price: data.price,
     };
   };
 
