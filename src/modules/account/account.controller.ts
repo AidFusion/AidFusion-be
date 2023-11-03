@@ -8,7 +8,12 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import {
   AccountLoginResponseDto,
@@ -107,6 +112,9 @@ export class AccountController {
     };
   }
 
+  @UseGuards(AuthGuard)
+  @Post('/send-verify')
+  @ApiOperation({ summary: 'Send verification Email' })
   @ApiCreatedResponse({
     status: 201,
     description: 'Success',
@@ -124,8 +132,6 @@ export class AccountController {
     status: 500,
     description: 'Internal Server Error',
   })
-  @UseGuards(AuthGuard)
-  @Post('/send-verify')
   async sendVerificationEmail(@Request() req): Promise<ResponseDto<boolean>> {
     const { sendStatus }: any = await this.accountService.sendVerificationEmail(
       req.user,
@@ -137,6 +143,8 @@ export class AccountController {
     };
   }
 
+  @Post('/:id/verify')
+  @ApiOperation({ summary: 'Verify email' })
   @ApiCreatedResponse({
     status: 201,
     description: 'Success',
@@ -155,7 +163,6 @@ export class AccountController {
     description: 'Internal Server Error',
   })
   @ApiOperation({ description: 'email verification endpoint' })
-  @Post('/:id/verify')
   async verifyEmail(
     @Body() data: VerifyEmailDto,
     @Param('id') id: string,
@@ -171,7 +178,7 @@ export class AccountController {
 
   @UseGuards(AuthGuard)
   @Get('/logout')
-  @ApiOperation({ summary: 'Get a user' })
+  @ApiOperation({ summary: 'Log a user out' })
   @ApiResponse({
     status: 201,
     description: 'Success',

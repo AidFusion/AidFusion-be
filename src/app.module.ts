@@ -9,6 +9,7 @@ import { jwtSecret } from './Config/env';
 import { JwtModule } from '@nestjs/jwt';
 import { NotificationModule } from './modules/notification/notification.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { MealModule } from './modules/meal/meal.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AuthModule } from './modules/auth/auth.module';
     }),
     NotificationModule,
     AuthModule,
+    MealModule,
   ],
   controllers: [AppController],
   providers: [AppService, DonationService, PrismaService],
